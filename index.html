@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Exam Ready Notes – RGPV 2nd Year</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Exam Ready Notes – RGPV 2nd Year</h1>
+  </header>
+
+  <main>
+    <form class="filters">
+      <label for="semester">Semester:</label>
+      <select id="semester" name="semester">
+        <option value="">Select semester</option>
+        <option value="1">1st Semester</option>
+        <option value="2">2nd Semester</option>
+      </select>
+
+      <section class="upload-section">
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSfssMV4Ny7hjr5UOaYlmHSr5MAr2P1Bd2uG9Cacbl1qMp4VsQ/viewform?usp=header" target="_blank" class="upload-btn">
+    📤 Upload Your Notes – Get Free Access
+  </a>
+</section>
+
+      <label for="subject">Subject:</label>
+      <select id="subject" name="subject">
+        <option value="">Select subject</option>
+        <option value="maths">M2</option>
+        <option value="os">Operating Systems</option>
+        <option value="dsa">Data Structures</option>
+      </select>
+
+      <button type="button" onclick="window.open('https://drive.google.com/drive/folders/1dBxApENmsU1YiMiRHr-ovpQgKRYk3zmK?usp=sharing', '_blank');">Open Study Pack</button>
+    </form>
+  </main>
+  <script>
+  function openStudyPack() {
+    const semester = document.getElementById('semester').value;
+    const subject = document.getElementById('subject').value;
+    
+    if (semester && subject) {
+      const driveUrl = 'https://drive.google.com/drive/folders/1dBxApENmsU1YiMiRHr-ovpQgKRYk3zmK?usp=sharing';
+      window.open(driveUrl, '_blank');
+    } else {
+      alert('Semester aur Subject select karo!');
+    }
+  }
+  </script>
+</body>
+</html>
