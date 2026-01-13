@@ -7,104 +7,154 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Exam Ready Notes – RGPV 2nd Year</h1>
-  </header>
 
-  <main>
-    <form class="filters">
-      <label for="semester">Semester:</label>
-      <select id="semester">
-      <option value="">Select semester</option>
-      <option value="1">1st Semester</option>
-      <option value="2">2nd Semester</option>
+<header>
+  <h1>Exam Ready Notes – RGPV 2nd Year</h1>
+</header>
+
+<main>
+  <form class="filters">
+
+    <!-- Semester -->
+    <label for="semester">Semester:</label>
+    <select id="semester">
+      <option value="">Select Semester</option>
       <option value="3">3rd Semester</option>
       <option value="4">4th Semester</option>
-      <option value="5">5th Semester</option>
-      <option value="6">6th Semester</option>
-      </select>
+    </select>
 
-      </select>
+      <!-- Subject -->
+    <label for="subject">Subject:</label>
+    <select id="subject">
+      <option value="">Select Subject</option>
+      <option value="">dsa</option>
+      <option value="">Discrete Mathematics</option>
+      <option value="">EEEs</option>
+      <option value="">OOPM</option>
+      <option value="">Digital System</option>
+    </select>
 
-      <section class="upload-section">
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSfssMV4Ny7hjr5UOaYlmHSr5MAr2P1Bd2uG9Cacbl1qMp4VsQ/viewform?usp=header" target="_blank" class="upload-btn">
-    📤 Upload Your Notes – Get Free Access
-  </a>
-</section>
-<label for="semester">Semester:</label>
-<select id="semester">
-  <option value="">Select semester</option>
-  <option value="1">1st Semester</option>
-  <option value="2">2nd Semester</option>
-  <option value="3">3rd Semester</option>
-  <option value="4">4th Semester</option>
-</select>
+        <!-- Material -->
+    <label for="material">Material:</label>
+    <select id="material">
+      <option value="">Select Material</option>
+      <option value="notes">Notes</option>
+      <option value="pyqs">PYQs</option>
+      <option value="syllabus">Syllabus</option>
+    </select>
 
-<label for="subject">Subject:</label>
-<select id="subject">
-  <option value="">Select Subject</option>
-  <option value="">EEEs</option>
-  <option value="">Data Structure</option>
-  <option value="">Discrete mathmatics</option>
-  <option value="">Digital System</option>
-  <option value="">OOPM</option>
-  <option value="">Python</option>
-  <option value="">DBMS</option>
-</select>
+    <button type="button" onclick="openStudyPack()">Open Study Pack</button>
 
-<label for="material">Material:</label>
-<select id="material">
-  <option value="">Select material</option>
-  <option value="notes">Notes</option>
-  <option value="pyqs">PYQs</option>
-  <option value="syllabus">Syllabus</option>
-</select>
+  </form>
 
-      <button type="button" onclick="window.open('https://drive.google.com/drive/folders/1dBxApENmsU1YiMiRHr-ovpQgKRYk3zmK?usp=sharing', '_blank');">Open Study Pack</button>
-    </form>
-  </main>
-  <script>
+  <section class="upload-section">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfssMV4Ny7hjr5UOaYlmHSr5MAr2P1Bd2uG9Cacbl1qMp4VsQ/viewform"
+       target="_blank" class="upload-btn">
+      📤 Upload Your Notes – Get Free Access
+    </a>
+  </section>
+</main>
+
+<script>
 const data = {
-  "3": {
-    "maths": {
-      notes: "https://drive.google.com/drive/folders/M2_NOTES",
-      pyqs: "https://drive.google.com/drive/folders/M2_PYQS",
-      syllabus: "https://drive.google.com/drive/folders/M2_SYLLABUS"
+  "": {
+    "cn": {
+      notes: "CN_NOTES",
+      pyqs: "CN_PYQS",
+      syllabus: "CN_SYLLABUS"
     },
-    "os": {
-      notes: "https://drive.google.com/drive/folders/OS_NOTES",
-      pyqs: "https://drive.google.com/drive/folders/OS_PYQS",
-      syllabus: "https://drive.google.com/drive/folders/OS_SYLLABUS"
+        "cn": {
+      notes: "CN_NOTES",
+      pyqs: "CN_PYQS",
+      syllabus: "CN_SYLLABUS"
     },
-    "dsa": {
-      notes: "DSA_NOTES",
-      pyqs: "DSA_PYQS",
-      syllabus: "DSA_SYLLABUS"
+        "cn": {
+      notes: "CN_NOTES",
+      pyqs: "CN_PYQS",
+      syllabus: "CN_SYLLABUS"
     },
-    "dbms": {
-      notes: "DBMS_NOTES",
-      pyqs: "DBMS_PYQS",
-      syllabus: "DBMS_SYLLABUS"
+        "cn": {
+      notes: "CN_NOTES",
+      pyqs: "CN_PYQS",
+      syllabus: "CN_SYLLABUS"
     },
-    "coa": {
-      notes: "COA_NOTES",
-      pyqs: "COA_PYQS",
-      syllabus: "COA_SYLLABUS"
-    },
-    "toc": {
-      notes: "TOC_NOTES",
-      pyqs: "TOC_PYQS",
-      syllabus: "TOC_SYLLABUS"
-    },
-    "python": {
-      notes: "PY_NOTES",
-      pyqs: "PY_PYQS",
-      syllabus: "PY_SYLLABUS"
+    "java": {
+      notes: "JAVA_NOTES",
+      pyqs: "JAVA_PYQS",
+      syllabus: "JAVA_SYLLABUS"
     }
   },
-
+  "2": {
+    "cn": {
+      notes: "CN_NOTES",
+      pyqs: "CN_PYQS",
+      syllabus: "CN_SYLLABUS"
+    },
+        "cn": {
+      notes: "CN_NOTES",
+      pyqs: "CN_PYQS",
+      syllabus: "CN_SYLLABUS"
+    },
+        "cn": {
+      notes: "CN_NOTES",
+      pyqs: "CN_PYQS",
+      syllabus: "CN_SYLLABUS"
+    },
+        "cn": {
+      notes: "CN_NOTES",
+      pyqs: "CN_PYQS",
+      syllabus: "CN_SYLLABUS"
+    },
+    "java": {
+      notes: "JAVA_NOTES",
+      pyqs: "JAVA_PYQS",
+      syllabus: "JAVA_SYLLABUS"
+    }
+  },
+  "3": {
+    "Discrete Mathematics": {
+      notes: "https://drive.google.com/drive/folders/1Z8U2IaluGHGV3CkiYlqq5oKK_y1NYFoW?usp=drive_link",
+      pyqs: "https://drive.google.com/drive/folders/1WqMEYLj1oeJjo-t0PXgC30gxTb6VYGHa?usp=drive_link",
+      syllabus: "https://drive.google.com/drive/folders/M2_SYLLABUS"
+    },
+    "dsa": {
+      notes: "https://drive.google.com/drive/folders/1P2xL4HBrCTkS7M_F5HErfkTHZgqAQQma?usp=drive_link",
+      pyqs: "https://drive.google.com/drive/folders/1LDuDsBJ6ONqr9tFUrmHaO8uIwC6-2ZuI?usp=drive_link",
+      syllabus: "DSA_SYLLABUS"
+    },
+    "EEEs": {
+      notes: "https://drive.google.com/drive/folders/1ZQ6QoaLmGiZvaIbCaY6LwpcTlxweEqI7?usp=drive_link",
+      pyqs: "https://drive.google.com/drive/folders/12FtuXxGJKQJXWsXGVfb2uVSuelyLzzLh?usp=drive_link",
+      syllabus: "DBMS_SYLLABUS"
+    },
+    "Digital System": {
+      notes: "https://drive.google.com/drive/folders/10lYhVryrHRTU7wcHVhlNzkIR9XKvjim0?usp=drive_link",
+      pyqs: "https://drive.google.com/drive/folders/1LaTLi_9iU6tPJKV6oLe9J97c8Mpo8KT2?usp=drive_link",
+      syllabus: "CN_SYLLABUS"
+    },
+    "OOPM": {
+      notes: "https://drive.google.com/drive/folders/16ZVPO38l6EVrp_lesQWkfxIOvgXmKb4m?usp=drive_link",
+      pyqs: "https://drive.google.com/drive/folders/1KHBfLUKwdBMg8qyxY0qXUITU8fQljDlb?usp=drive_link",
+      syllabus: "CN_SYLLABUS"
+    }
+  },
   "4": {
     "cn": {
+      notes: "CN_NOTES",
+      pyqs: "CN_PYQS",
+      syllabus: "CN_SYLLABUS"
+    },
+        "cn": {
+      notes: "CN_NOTES",
+      pyqs: "CN_PYQS",
+      syllabus: "CN_SYLLABUS"
+    },
+        "cn": {
+      notes: "CN_NOTES",
+      pyqs: "CN_PYQS",
+      syllabus: "CN_SYLLABUS"
+    },
+        "cn": {
       notes: "CN_NOTES",
       pyqs: "CN_PYQS",
       syllabus: "CN_SYLLABUS"
@@ -117,22 +167,23 @@ const data = {
   }
 };
 
-const subjectSelect = document.getElementById("subject");
 const semesterSelect = document.getElementById("semester");
+const subjectSelect = document.getElementById("subject");
 
 semesterSelect.addEventListener("change", () => {
-  subjectSelect.innerHTML = '<option value="">Select subject</option>';
+  subjectSelect.innerHTML = '<option value="">Select Subject</option>';
 
   const semester = semesterSelect.value;
   if (!data[semester]) return;
 
-  Object.keys(data[semester]).forEach(sub => {
+  Object.keys(data[semester]).forEach(subject => {
     const option = document.createElement("option");
-    option.value = sub;
-    option.textContent = sub.toUpperCase();
+    option.value = subject;
+    option.textContent = subject.toUpperCase();
     subjectSelect.appendChild(option);
   });
 });
+
 
 function openStudyPack() {
   const semester = semesterSelect.value;
@@ -148,5 +199,6 @@ function openStudyPack() {
   window.open(link, "_blank");
 }
 </script>
+
 </body>
 </html>
