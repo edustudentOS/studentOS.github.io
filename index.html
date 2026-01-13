@@ -14,10 +14,16 @@
   <main>
     <form class="filters">
       <label for="semester">Semester:</label>
-      <select id="semester" name="semester">
-        <option value="">Select semester</option>
-        <option value="1">1st Semester</option>
-        <option value="2">2nd Semester</option>
+      <select id="semester">
+      <option value="">Select semester</option>
+      <option value="1">1st Semester</option>
+      <option value="2">2nd Semester</option>
+      <option value="3">3rd Semester</option>
+      <option value="4">4th Semester</option>
+      <option value="5">5th Semester</option>
+      <option value="6">6th Semester</option>
+      </select>
+
       </select>
 
       <section class="upload-section">
@@ -25,30 +31,122 @@
     📤 Upload Your Notes – Get Free Access
   </a>
 </section>
+<label for="semester">Semester:</label>
+<select id="semester">
+  <option value="">Select semester</option>
+  <option value="1">1st Semester</option>
+  <option value="2">2nd Semester</option>
+  <option value="3">3rd Semester</option>
+  <option value="4">4th Semester</option>
+</select>
 
-      <label for="subject">Subject:</label>
-      <select id="subject" name="subject">
-        <option value="">Select subject</option>
-        <option value="maths">M2</option>
-        <option value="os">Operating Systems</option>
-        <option value="dsa">Data Structures</option>
-      </select>
+<label for="subject">Subject:</label>
+<select id="subject">
+  <option value="">Select Subject</option>
+  <option value="">EEEs</option>
+  <option value="">Data Structure</option>
+  <option value="">Discrete mathmatics</option>
+  <option value="">Digital System</option>
+  <option value="">OOPM</option>
+  <option value="">Python</option>
+  <option value="">DBMS</option>
+</select>
+
+<label for="material">Material:</label>
+<select id="material">
+  <option value="">Select material</option>
+  <option value="notes">Notes</option>
+  <option value="pyqs">PYQs</option>
+  <option value="syllabus">Syllabus</option>
+</select>
 
       <button type="button" onclick="window.open('https://drive.google.com/drive/folders/1dBxApENmsU1YiMiRHr-ovpQgKRYk3zmK?usp=sharing', '_blank');">Open Study Pack</button>
     </form>
   </main>
   <script>
-  function openStudyPack() {
-    const semester = document.getElementById('semester').value;
-    const subject = document.getElementById('subject').value;
-    
-    if (semester && subject) {
-      const driveUrl = 'https://drive.google.com/drive/folders/1dBxApENmsU1YiMiRHr-ovpQgKRYk3zmK?usp=sharing';
-      window.open(driveUrl, '_blank');
-    } else {
-      alert('Semester aur Subject select karo!');
+const data = {
+  "3": {
+    "maths": {
+      notes: "https://drive.google.com/drive/folders/M2_NOTES",
+      pyqs: "https://drive.google.com/drive/folders/M2_PYQS",
+      syllabus: "https://drive.google.com/drive/folders/M2_SYLLABUS"
+    },
+    "os": {
+      notes: "https://drive.google.com/drive/folders/OS_NOTES",
+      pyqs: "https://drive.google.com/drive/folders/OS_PYQS",
+      syllabus: "https://drive.google.com/drive/folders/OS_SYLLABUS"
+    },
+    "dsa": {
+      notes: "DSA_NOTES",
+      pyqs: "DSA_PYQS",
+      syllabus: "DSA_SYLLABUS"
+    },
+    "dbms": {
+      notes: "DBMS_NOTES",
+      pyqs: "DBMS_PYQS",
+      syllabus: "DBMS_SYLLABUS"
+    },
+    "coa": {
+      notes: "COA_NOTES",
+      pyqs: "COA_PYQS",
+      syllabus: "COA_SYLLABUS"
+    },
+    "toc": {
+      notes: "TOC_NOTES",
+      pyqs: "TOC_PYQS",
+      syllabus: "TOC_SYLLABUS"
+    },
+    "python": {
+      notes: "PY_NOTES",
+      pyqs: "PY_PYQS",
+      syllabus: "PY_SYLLABUS"
+    }
+  },
+
+  "4": {
+    "cn": {
+      notes: "CN_NOTES",
+      pyqs: "CN_PYQS",
+      syllabus: "CN_SYLLABUS"
+    },
+    "java": {
+      notes: "JAVA_NOTES",
+      pyqs: "JAVA_PYQS",
+      syllabus: "JAVA_SYLLABUS"
     }
   }
-  </script>
+};
+
+const subjectSelect = document.getElementById("subject");
+const semesterSelect = document.getElementById("semester");
+
+semesterSelect.addEventListener("change", () => {
+  subjectSelect.innerHTML = '<option value="">Select subject</option>';
+
+  const semester = semesterSelect.value;
+  if (!data[semester]) return;
+
+  Object.keys(data[semester]).forEach(sub => {
+    const option = document.createElement("option");
+    option.value = sub;
+    option.textContent = sub.toUpperCase();
+    subjectSelect.appendChild(option);
+  });
+});
+
+function openStudyPack() {
+  const semester = semesterSelect.value;
+  const subject = subjectSelect.value;
+  const material = document.getElementById("material").value;
+
+  if (!semester || !subject || !material) {
+    alert("Please select Semester, Subject & Material");
+    return;
+  }
+
+  const link = data[semester][subject][material];
+  window.open(link, "_blank");
+}
+</script>
 </body>
 </html>
