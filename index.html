@@ -5,12 +5,23 @@
   <title>Exam Ready Notes – RGPV 2nd Year</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
 <header>
   <h1>Exam Ready Notes – RGPV 2nd Year</h1>
 </header>
+
+<div id="authBox" style="text-align:center; margin-bottom:16px;">
+  <button id="loginBtn">Sign in with Google</button>
+
+  <div id="userInfo" style="display:none; margin-top:8px;">
+    <p id="userName" style="font-weight:600;"></p>
+    <p id="userEmail" style="font-size:0.85rem; color:#555;"></p>
+    <button id="logoutBtn" style="margin-top:8px; background:#ef4444;">Logout</button>
+  </div>
+</div>
 
 <main>
 
@@ -349,6 +360,47 @@ function openStudyPack() {
 
   window.open(pack, "_blank");
 }
+
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const userInfo = document.getElementById("userInfo");
+
+function handleCredentialResponse(response) {
+  const userObject = JSON.parse(atob(response.credential.split(".")[1]));
+
+  localStorage.setItem("studentName", userObject.name);
+  localStorage.setItem("studentEmail", userObject.email);
+
+  showUser();
+}
+
+function showUser() {
+  const name = localStorage.getItem("studentName");
+  const email = localStorage.getItem("studentEmail");
+
+  if (name) {
+    loginBtn.style.display = "none";
+    userInfo.style.display = "block";
+    document.getElementById("userName").textContent = name;
+    document.getElementById("userEmail").textContent = email;
+  }
+}
+
+loginBtn.addEventListener("click", () => {
+  google.accounts.id.initialize({
+    client_id: "596258765969-gg9u20m1phalc6fhke70ur2mogdnqci9.apps.googleusercontent.com",
+    callback: handleCredentialResponse
+  });
+
+  google.accounts.id.prompt();
+});
+
+logoutBtn.addEventListener("click", () => {
+  localStorage.clear();
+  location.reload();
+});
+
+showUser();
 </script>
 
 </body>
