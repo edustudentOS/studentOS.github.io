@@ -13,15 +13,27 @@
 </header>
 
 <main>
+
+  <section id="notes"></section>
+
+
   <form class="filters">
 
     <!-- Semester -->
     <label for="semester">Semester:</label>
     <select id="semester">
       <option value="">Select Semester</option>
+      <option value="1">1st Semester</option>
+      <option value="2">2nd Semester</option>
       <option value="3">3rd Semester</option>
       <option value="4">4th Semester</option>
     </select>
+
+    <!-- Show available only -->
+    <div style="margin: 8px 0;">
+      <input type="checkbox" id="availableOnly">
+      <label for="availableOnly">Show Available Only</label>
+    </div>
 
       <!-- Subject -->
     <label for="subject">Subject:</label>
@@ -33,6 +45,10 @@
       <option value="">OOPM</option>
       <option value="">Digital System</option>
     </select>
+
+    <div id="chipContainer" style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+  <!-- Chips yahan JS add karega -->
+</div>
 
         <!-- Material -->
     <label for="material">Material:</label>
@@ -55,30 +71,46 @@
   </section>
 </main>
 
+<nav class="bottom-nav">
+  <a href="#" class="nav-item active">
+    🏠 <span>Home</span>
+  </a>
+  <a href="#notes" class="nav-item">
+    📚 <span>Notes</span>
+  </a>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSfssMV4Ny7hjr5UOaYlmHSr5MAr2P1Bd2uG9Cacbl1qMp4VsQ/viewform"
+     target="_blank" class="nav-item center-btn">
+    ➕ <span>Upload</span>
+  </a>
+  <a href="#profile" class="nav-item">
+    👤 <span>Profile</span>
+  </a>
+</nav>
+
 <script>
 const data = {
-  "": {
-    "cn": {
+  "1": {
+    "Chemistry": {
+      notes: "https://drive.google.com/drive/folders/1YkGnUUEm1QwP8A258wwwir4KkKRYVEhQ?usp=drive_link",
+      pyqs: "CN_PYQS",
+      syllabus: "CN_SYLLABUS"
+    },
+        "M1": {
       notes: "CN_NOTES",
       pyqs: "CN_PYQS",
       syllabus: "CN_SYLLABUS"
     },
-        "cn": {
+        "English for Communication": {
       notes: "CN_NOTES",
       pyqs: "CN_PYQS",
       syllabus: "CN_SYLLABUS"
     },
-        "cn": {
+        "Basic Electrical & Electronics Engineering ": {
       notes: "CN_NOTES",
       pyqs: "CN_PYQS",
       syllabus: "CN_SYLLABUS"
     },
-        "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-    "java": {
+    "Engineering Drawing": {
       notes: "JAVA_NOTES",
       pyqs: "JAVA_PYQS",
       syllabus: "JAVA_SYLLABUS"
@@ -170,21 +202,134 @@ const data = {
 const semesterSelect = document.getElementById("semester");
 const subjectSelect = document.getElementById("subject");
 
-semesterSelect.addEventListener("change", () => {
+semesterSelect.addEventListener("change", loadSubjects);
+
+function getBadges(materials) {
+  const badges = [];
+
+  if (materials.notes && materials.notes.startsWith("http"))
+    badges.push("🟢 Notes");
+
+  if (materials.pyqs && materials.pyqs.startsWith("http"))
+    badges.push("🟡 PYQs");
+
+  if (badges.length === 0)
+    badges.push("🔴 Coming Soon");
+
+  return " — " + badges.join(" | ");
+}
+
+function loadSubjects() {
   subjectSelect.innerHTML = '<option value="">Select Subject</option>';
 
+  document.getElementsByID("chipContainer").innerHTML="";
+
   const semester = semesterSelect.value;
-  if (!data[semester]) return;
+  const showAvailableOnly = document.getElementById("availableOnly").checked;
+
+  if (!semester || !data[semester]) return;
 
   Object.keys(data[semester]).forEach(subject => {
+    const materials = data[semester][subject];
+
+    let hasAny = false;
+    for (let key in materials) {
+      if (materials[key] && materials[key].startsWith("http")) {
+        hasAny = true;
+        break;
+      }
+    }
+
+    if (showAvailableOnly && !hasAny) return;
+
     const option = document.createElement("option");
     option.value = subject;
-    option.textContent = subject.toUpperCase();
+    option.textContent = subject + getBadges(materials);
     subjectSelect.appendChild(option);
   });
+}
+
+semesterSelect.addEventListener("change", loadSubjects);
+document.getElementById("availableOnly").addEventListener("change", loadSubjects);
+
+
+
+function loadSubjects() {
+  subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+  document.getElementById("chipContainer").innerHTML = "";
+
+  const semester = semesterSelect.value;
+  const showAvailableOnly = document.getElementById("availableOnly").checked;
+
+  if (!semester || !data[semester]) return;
+
+  Object.keys(data[semester]).forEach(subject => {
+    const materials = data[semester][subject];
+
+    let hasAny = false;
+    for (let key in materials) {
+      if (materials[key] && materials[key].startsWith("http")) {
+        hasAny = true;
+        break;
+      }
+    }
+
+    if (showAvailableOnly && !hasAny) return;
+
+    const option = document.createElement("option");
+    option.value = subject;
+    option.textContent = subject;
+    subjectSelect.appendChild(option);
+  });
+}
+
+// -------- Chips --------
+function renderChips(materials) {
+  const chipBox = document.getElementById("chipContainer");
+  chipBox.innerHTML = "";
+
+  let added = false;
+
+  if (materials.notes && materials.notes.startsWith("http")) {
+    const chip = document.createElement("div");
+    chip.className = "status-chip chip-notes";
+    chip.innerHTML = "✅ Notes Available";
+    chipBox.appendChild(chip);
+    added = true;
+  }
+
+  if (materials.pyqs && materials.pyqs.startsWith("http")) {
+    const chip = document.createElement("div");
+    chip.className = "status-chip chip-pyqs";
+    chip.innerHTML = "📄 PYQs Available";
+    chipBox.appendChild(chip);
+    added = true;
+  }
+
+  if (!added) {
+    const chip = document.createElement("div");
+    chip.className = "status-chip chip-coming";
+    chip.innerHTML = "⏳ Coming Soon";
+    chipBox.appendChild(chip);
+  }
+}
+
+// Show chips when subject changes
+subjectSelect.addEventListener("change", () => {
+  const semester = semesterSelect.value;
+  const subject = subjectSelect.value;
+
+  if (!semester || !subject) {
+    document.getElementById("chipContainer").innerHTML = "";
+    return;
+  }
+
+  const materials = data[semester][subject];
+  renderChips(materials);
 });
 
 
+//--------- Open study Pack
 function openStudyPack() {
   const semester = semesterSelect.value;
   const subject = subjectSelect.value;
@@ -195,8 +340,14 @@ function openStudyPack() {
     return;
   }
 
-  const link = data[semester][subject][material];
-  window.open(link, "_blank");
+  const pack = data[semester]?.[subject]?.[material];
+
+  if (!pack) {
+    alert("This material is not uploaded yet.");
+    return;
+  }
+
+  window.open(pack, "_blank");
 }
 </script>
 
