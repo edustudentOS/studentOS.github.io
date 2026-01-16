@@ -82,6 +82,36 @@
   </section>
 </main>
 
+<section id="adminPanel" style="display:none; margin-top:30px; padding:16px; border:1px solid #ddd; border-radius:10px; background:#f9fafb;">
+  <h2 style="text-align:center;">🔐 Admin Panel</h2>
+
+  <label>Semester:</label>
+  <select id="adminSemester">
+    <option value="">Select Semester</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+
+  <label>Subject:</label>
+  <input id="adminSubject" placeholder="e.g. DSA">
+
+  <label>Material:</label>
+  <select id="adminMaterial">
+    <option value="notes">Notes</option>
+    <option value="pyqs">PYQs</option>
+    <option value="syllabus">Syllabus</option>
+  </select>
+
+  <label>Drive Link:</label>
+  <input id="adminLink" placeholder="Paste Google Drive link here" style="width:100%">
+
+  <button onclick="saveAdminData()" style="margin-top:10px;">💾 Save Link</button>
+
+  <p id="adminMsg" style="margin-top:10px; color:green;"></p>
+</section>
+
 <nav class="bottom-nav">
   <a href="#" class="nav-item active">
     🏠 <span>Home</span>
@@ -371,6 +401,8 @@ function handleCredentialResponse(response) {
   localStorage.setItem("studentName", userObject.name);
   localStorage.setItem("studentEmail", userObject.email);
 
+  ///--------User Pannle----
+  
   showUser();
 }
 
@@ -387,11 +419,7 @@ function showUser() {
 }
 
 loginBtn.addEventListener("click", () => {
-  google.accounts.id.initialize({
-    client_id: "596258765969-gg9u20m1phalc6fhke70ur2mogdnqci9.apps.googleusercontent.com",
-    callback: handleCredentialResponse
-  });
-
+  google.accounts.id.initialize
   google.accounts.id.prompt();
 });
 
@@ -401,6 +429,49 @@ logoutBtn.addEventListener("click", () => {
 });
 
 showUser();
+
+window.onload = function () {
+  google.accounts.id.initialize({
+    client_id: "596258765969-gg9u20m1phalc6fhke70ur2mogdnqci9.apps.googleusercontent.com",
+    callback: handleCredentialResponse
+  });
+};
+
+
+//-------Admin pannel-------------
+function checkAdmin() {
+  const email = localStorage.getItem("studentEmail");
+
+  // 👇 Replace with YOUR Gmail
+  if (email === "YOUR_EMAIL@gmail.com") {
+    document.getElementById("adminPanel").style.display = "block";
+  }
+}
+
+function saveAdminData() {
+  const sem = document.getElementById("adminSemester").value;
+  const sub = document.getElementById("adminSubject").value.trim();
+  const mat = document.getElementById("adminMaterial").value;
+  const link = document.getElementById("adminLink").value.trim();
+
+  if (!sem || !sub || !link) {
+    alert("Fill all fields!");
+    return;
+  }
+
+  if (!data[sem]) data[sem] = {};
+
+  if (!data[sem][sub]) {
+    data[sem][sub] = { notes:"", pyqs:"", syllabus:"" };
+  }
+
+  data[sem][sub][mat] = link;
+
+  document.getElementById("adminMsg").textContent =
+    `✅ Saved: Sem ${sem} → ${sub} → ${mat}`;
+
+  loadSubjects(); // refresh dropdown
+}
 </script>
 
 </body>
