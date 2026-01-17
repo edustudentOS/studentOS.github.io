@@ -42,6 +42,20 @@
   </p>
 </section>
 
+<section id="adminPanel"
+ style="display:none; width:100%; max-width:500px;
+ background:#fff7ed; padding:16px; border-radius:12px;
+ margin-bottom:16px; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+
+  <h3>🛠️ Admin Panel</h3>
+  <p>Welcome Admin</p>
+
+  <button onclick="exportData()"
+   style="background:#7c3aed; color:white; margin-top:8px;">
+   📁 Export Student Data
+  </button>
+</section>
+
 <main>
 
   <section id="notes"></section>
@@ -382,6 +396,13 @@ function openStudyPack() {
     return;
   }
 
+  localStorage.setItem(
+  "lastDownload",
+  `${subject} - ${material} (Sem ${semester})`
+);
+
+updateDashboard();
+
   //---------FAVORITES BUTTON________
 document.getElementById("favBtn").addEventListener("click", () => {
   const subject = subjectSelect.value;
@@ -440,6 +461,16 @@ function updateDashboard() {
   window.open(pack, "_blank");
 
   // Update dashboard instantly
+  showUser = function () {
+  const name = localStorage.getItem("studentName");
+
+  if (name) {
+    loginBtn.style.display = "none";
+    userInfo.style.display = "block";
+
+    updateDashboard();   // IMPORTANT
+  }
+};
   updateDashboard();
 }
 
@@ -574,9 +605,19 @@ showUser = function () {
   }
 };
 
-</script>
+function exportData() {
+  const data = {
+    favourites: localStorage.getItem("favourites"),
+    lastDownload: localStorage.getItem("lastDownload"),
+    name: localStorage.getItem("studentName"),
+    email: localStorage.getItem("studentEmail")
+  };
 
-console.clear();
+  console.log("ADMIN DATA:", data);
+  alert("Open Console (F12) to see data");
+}
+
+</script>
 
 </body>
 </html>
