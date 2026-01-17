@@ -13,6 +13,7 @@
   <h1>Exam Ready Notes – RGPV 2nd Year</h1>
 </header>
 
+
 <div id="authBox" style="text-align:center; margin-bottom:16px;">
   <button id="loginBtn">Sign in with Google</button>
 
@@ -22,6 +23,24 @@
     <button id="logoutBtn" style="margin-top:8px; background:#ef4444;">Logout</button>
   </div>
 </div>
+
+
+<section id="dashboard" 
+  style="display:none; margin:10px auto; max-width:500px; 
+         background:#ffffff; padding:16px; border-radius:12px;
+         box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+
+  <h3>👋 Welcome, <span id="dashName"></span></h3>
+
+  <p>🎓 Semester: <strong id="dashSem">Not selected</strong></p>
+
+  <p>⭐ Favourite Subjects:</p>
+  <div id="favList" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+
+  <p style="margin-top:8px;">📥 Last Download: 
+     <strong id="lastDownload">None</strong>
+  </p>
+</section>
 
 <main>
 
@@ -82,6 +101,22 @@
   </section>
 </main>
 
+<nav class="bottom-nav">
+  <a href="#" class="nav-item active">
+    🏠 <span>Home</span>
+  </a>
+  <a href="#notes" class="nav-item">
+    📚 <span>Notes</span>
+  </a>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSfssMV4Ny7hjr5UOaYlmHSr5MAr2P1Bd2uG9Cacbl1qMp4VsQ/viewform"
+     target="_blank" class="nav-item center-btn">
+    ➕ <span>Upload</span>
+  </a>
+  <a href="#profile" class="nav-item">
+    👤 <span>Profile</span>
+  </a>
+</nav>
+
 <section id="adminPanel" style="display:none; margin-top:30px; padding:16px; border:1px solid #ddd; border-radius:10px; background:#f9fafb;">
   <h2 style="text-align:center;">🔐 Admin Panel</h2>
 
@@ -96,6 +131,7 @@
 
   <label>Subject:</label>
   <input id="adminSubject" placeholder="e.g. DSA">
+
 
   <label>Material:</label>
   <select id="adminMaterial">
@@ -112,21 +148,6 @@
   <p id="adminMsg" style="margin-top:10px; color:green;"></p>
 </section>
 
-<nav class="bottom-nav">
-  <a href="#" class="nav-item active">
-    🏠 <span>Home</span>
-  </a>
-  <a href="#notes" class="nav-item">
-    📚 <span>Notes</span>
-  </a>
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSfssMV4Ny7hjr5UOaYlmHSr5MAr2P1Bd2uG9Cacbl1qMp4VsQ/viewform"
-     target="_blank" class="nav-item center-btn">
-    ➕ <span>Upload</span>
-  </a>
-  <a href="#profile" class="nav-item">
-    👤 <span>Profile</span>
-  </a>
-</nav>
 
 <script>
 const data = {
@@ -245,6 +266,7 @@ const subjectSelect = document.getElementById("subject");
 
 semesterSelect.addEventListener("change", loadSubjects);
 
+
 function getBadges(materials) {
   const badges = [];
 
@@ -260,6 +282,7 @@ function getBadges(materials) {
   return " — " + badges.join(" | ");
 }
 
+//------------ LOAD SUBJECT BY SEMESTER-----
 function loadSubjects() {
   subjectSelect.innerHTML = '<option value="">Select Subject</option>';
 
@@ -294,37 +317,8 @@ semesterSelect.addEventListener("change", loadSubjects);
 document.getElementById("availableOnly").addEventListener("change", loadSubjects);
 
 
+///-------- Chips --------
 
-function loadSubjects() {
-  subjectSelect.innerHTML = '<option value="">Select Subject</option>';
-  document.getElementById("chipContainer").innerHTML = "";
-
-  const semester = semesterSelect.value;
-  const showAvailableOnly = document.getElementById("availableOnly").checked;
-
-  if (!semester || !data[semester]) return;
-
-  Object.keys(data[semester]).forEach(subject => {
-    const materials = data[semester][subject];
-
-    let hasAny = false;
-    for (let key in materials) {
-      if (materials[key] && materials[key].startsWith("http")) {
-        hasAny = true;
-        break;
-      }
-    }
-
-    if (showAvailableOnly && !hasAny) return;
-
-    const option = document.createElement("option");
-    option.value = subject;
-    option.textContent = subject;
-    subjectSelect.appendChild(option);
-  });
-}
-
-// -------- Chips --------
 function renderChips(materials) {
   const chipBox = document.getElementById("chipContainer");
   chipBox.innerHTML = "";
@@ -388,9 +382,68 @@ function openStudyPack() {
     return;
   }
 
-  window.open(pack, "_blank");
+  //---------FAVORITES BUTTON________
+document.getElementById("favBtn").addEventListener("click", () => {
+  const subject = subjectSelect.value;
+  if (!subject) {
+    alert("Select a subject first!");
+    return;
+  }
+
+  let favs = JSON.parse(localStorage.getItem("favourites") || "[]");
+
+  if (!favs.includes(subject)) {
+    favs.push(subject);
+    localStorage.setItem("favourites", JSON.stringify(favs));
+    updateDashboard();
+  } else {
+    alert("Already in favourites!");
+  }
+});
+
+// -------- DASHBOARD LOGIC --------
+function updateDashboard() {
+  const name = localStorage.getItem("studentName");
+  const email = localStorage.getItem("studentEmail");
+
+  if (!name) return;
+
+  document.getElementById("dashboard").style.display = "block";
+  document.getElementById("dashName").textContent = name;
+
+  const sem = semesterSelect.value || "Not selected";
+  document.getElementById("dashSem").textContent = sem;
+
+  const favs = JSON.parse(localStorage.getItem("favourites") || "[]");
+  const favBox = document.getElementById("favList");
+  favBox.innerHTML = "";
+
+  favs.forEach(sub => {
+    const chip = document.createElement("div");
+    chip.textContent = "⭐ " + sub;
+    chip.style.cssText =
+      "background:#e0f2fe;padding:6px 10px;border-radius:999px;font-size:0.85rem;";
+    favBox.appendChild(chip);
+  });
+
+  const last = localStorage.getItem("lastDownload") || "None";
+  document.getElementById("lastDownload").textContent = last;
 }
 
+
+  // ---- NEW: Save last download ----
+  localStorage.setItem(
+    "lastDownload",
+    `${subject} → ${material.toUpperCase()}`
+  );
+
+  window.open(pack, "_blank");
+
+  // Update dashboard instantly
+  updateDashboard();
+}
+
+//-----Google Login------
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const userInfo = document.getElementById("userInfo");
@@ -418,6 +471,13 @@ function showUser() {
   }
 }
 
+window.onload = function () {
+  google.accounts.id.initialize({
+    client_id: "596258765969-gg9u20m1phalc6fhke70ur2mogdnqci9.apps.googleusercontent.com",
+    callback: handleCredentialResponse
+  });
+};
+
 loginBtn.addEventListener("click", () => {
   google.accounts.id.initialize
   google.accounts.id.prompt();
@@ -429,13 +489,6 @@ logoutBtn.addEventListener("click", () => {
 });
 
 showUser();
-
-window.onload = function () {
-  google.accounts.id.initialize({
-    client_id: "596258765969-gg9u20m1phalc6fhke70ur2mogdnqci9.apps.googleusercontent.com",
-    callback: handleCredentialResponse
-  });
-};
 
 
 //-------Admin pannel-------------
@@ -472,7 +525,26 @@ function saveAdminData() {
 
   loadSubjects(); // refresh dropdown
 }
+
+
+// Override showUser so dashboard loads after login
+showUser = function () {
+  const name = localStorage.getItem("studentName");
+  const email = localStorage.getItem("studentEmail");
+
+  if (name) {
+    loginBtn.style.display = "none";
+    userInfo.style.display = "block";
+    document.getElementById("userName").textContent = name;
+    document.getElementById("userEmail").textContent = email;
+
+    checkAdmin();
+    updateDashboard();
+  }
+};
+
 </script>
 
 </body>
 </html>
+       
