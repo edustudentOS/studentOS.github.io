@@ -443,6 +443,39 @@ function updateDashboard() {
   updateDashboard();
 }
 
+function updateDashboard() {
+  const name = localStorage.getItem("studentName");
+  if (!name) return;
+
+  // Show dashboard if visible
+  const dash = document.getElementById("dashboard");
+  if (dash) dash.style.display = "block";
+
+  document.getElementById("dashName").textContent = name;
+
+  // Semester
+  const sem = document.getElementById("semester").value || "Not selected";
+  document.getElementById("dashSem").textContent = sem;
+
+  // Favourites
+  const favs = JSON.parse(localStorage.getItem("favourites") || "[]");
+  const favBox = document.getElementById("favList");
+  if (favBox) {
+    favBox.innerHTML = "";
+    favs.forEach(sub => {
+      const chip = document.createElement("div");
+      chip.textContent = "⭐ " + sub;
+      chip.style.cssText = "background:#e0f2fe;padding:6px 10px;border-radius:999px;font-size:0.85rem;";
+      favBox.appendChild(chip);
+    });
+  }
+
+  // Last download
+  const last = localStorage.getItem("lastDownload") || "None";
+  const lastEl = document.getElementById("lastDownload");
+  if (lastEl) lastEl.textContent = last;
+}
+
 //-----Google Login------
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
@@ -453,8 +486,6 @@ function handleCredentialResponse(response) {
 
   localStorage.setItem("studentName", userObject.name);
   localStorage.setItem("studentEmail", userObject.email);
-
-  ///--------User Pannle----
 
   showUser();
 }
@@ -544,6 +575,8 @@ showUser = function () {
 };
 
 </script>
+
+console.clear();
 
 </body>
 </html>
