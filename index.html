@@ -23,7 +23,7 @@
   </div>
 </div>
 
-<main>
+<main id="homeScreen">
 
   <section id="notes"></section>
 
@@ -112,10 +112,83 @@
   <p id="adminMsg" style="margin-top:10px; color:green;"></p>
 </section>
 
+<section id="profile" class="screen hidden">
+  <div class="filter-card" style="max-width:520px; margin:auto;">
+
+    <div class="filter-card__header">
+      <h2 class="filter-card__title">🎓 Student Dashboard</h2>
+      <p style="color:#555; font-size:0.9rem;">Your personal study hub</p>
+    </div>
+
+    <div class="filter-card__body">
+
+      <!-- USER CARD -->
+      <div style="background:#f0f7ff; padding:12px; border-radius:10px;">
+        <p><strong>Name:</strong> <span id="pName">-</span></p>
+        <p><strong>Email:</strong> <span id="pEmail">-</span></p>
+      </div>
+
+      <!-- STATS GRID -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+
+        <div style="background:#ecfeff; padding:10px; border-radius:10px;">
+          <p style="font-size:0.8rem;">📚 Materials Opened</p>
+          <h3 id="statOpened">0</h3>
+        </div>
+
+        <div style="background:#fff7ed; padding:10px; border-radius:10px;">
+          <p style="font-size:0.8rem;">⭐ Favorites</p>
+          <h3 id="statFav">0</h3>
+        </div>
+
+      </div>
+
+      <hr style="margin:12px 0;">
+
+      <label>College Name:</label>
+      <input id="college" placeholder="Enter your college" style="padding:8px; border-radius:6px; width:100%;">
+
+      <label>Branch:</label>
+      <select id="branch" style="padding:8px; width:100%;">
+        <option value="">Select Branch</option>
+        <option value="CSE">CSE</option>
+        <option value="IT">IT</option>
+        <option value="ECE">ECE</option>
+        <option value="EEE">EEE</option>
+        <option value="ME">Mechanical</option>
+        <option value="CE">Civil</option>
+      </select>
+
+      <label>Year:</label>
+      <select id="year" style="padding:8px; width:100%;">
+        <option value="">Select Year</option>
+        <option value="1">1st Year</option>
+        <option value="2">2nd Year</option>
+        <option value="3">3rd Year</option>
+        <option value="4">4th Year</option>
+      </select>
+
+      <button onclick="saveProfile()" class="filter-card__button filter-card__button--primary">
+        💾 Save Profile
+      </button>
+
+      <p id="profileMsg" style="color:green; margin-top:8px;"></p>
+
+      <hr style="margin:12px 0;">
+
+      <!-- RECENT ACTIVITY -->
+      <h3 style="font-size:1rem;">🕒 Recent Activity</h3>
+      <ul id="recentList" style="font-size:0.9rem; margin-left:18px;"></ul>
+
+    </div>
+  </div>
+</section>
+
 <nav class="bottom-nav">
-  <a href="#" class="nav-item active">
-    🏠 <span>Home</span>
-  </a>
+<a href="javascript:void(0)" id="homeNav" class="nav-item active">
+  🏠 <span>Home</span>
+</a>
+
   <a href="#notes" class="nav-item">
     📚 <span>Notes</span>
   </a>
@@ -123,355 +196,13 @@
      target="_blank" class="nav-item center-btn">
     ➕ <span>Upload</span>
   </a>
-  <a href="#profile" class="nav-item">
-    👤 <span>Profile</span>
-  </a>
+<a href="javascript:void(0)" id="profileNav" class="nav-item">
+  👤 <span>Profile</span>
+</a>
 </nav>
 
-<script>
-const data = {
-  "1": {
-    "Chemistry": {
-      notes: "https://drive.google.com/drive/folders/1YkGnUUEm1QwP8A258wwwir4KkKRYVEhQ?usp=drive_link",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "M1": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "English for Communication": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "Basic Electrical & Electronics Engineering ": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-    "Engineering Drawing": {
-      notes: "JAVA_NOTES",
-      pyqs: "JAVA_PYQS",
-      syllabus: "JAVA_SYLLABUS"
-    }
-  },
-  "2": {
-    "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-    "java": {
-      notes: "JAVA_NOTES",
-      pyqs: "JAVA_PYQS",
-      syllabus: "JAVA_SYLLABUS"
-    }
-  },
-  "3": {
-    "Discrete Mathematics": {
-      notes: "https://drive.google.com/drive/folders/1Z8U2IaluGHGV3CkiYlqq5oKK_y1NYFoW?usp=drive_link",
-      pyqs: "https://drive.google.com/drive/folders/1WqMEYLj1oeJjo-t0PXgC30gxTb6VYGHa?usp=drive_link",
-      syllabus: "https://drive.google.com/drive/folders/M2_SYLLABUS"
-    },
-    "dsa": {
-      notes: "https://drive.google.com/drive/folders/1P2xL4HBrCTkS7M_F5HErfkTHZgqAQQma?usp=drive_link",
-      pyqs: "https://drive.google.com/drive/folders/1LDuDsBJ6ONqr9tFUrmHaO8uIwC6-2ZuI?usp=drive_link",
-      syllabus: "DSA_SYLLABUS"
-    },
-    "EEEs": {
-      notes: "https://drive.google.com/drive/folders/1ZQ6QoaLmGiZvaIbCaY6LwpcTlxweEqI7?usp=drive_link",
-      pyqs: "https://drive.google.com/drive/folders/12FtuXxGJKQJXWsXGVfb2uVSuelyLzzLh?usp=drive_link",
-      syllabus: "DBMS_SYLLABUS"
-    },
-    "Digital System": {
-      notes: "https://drive.google.com/drive/folders/10lYhVryrHRTU7wcHVhlNzkIR9XKvjim0?usp=drive_link",
-      pyqs: "https://drive.google.com/drive/folders/1LaTLi_9iU6tPJKV6oLe9J97c8Mpo8KT2?usp=drive_link",
-      syllabus: "CN_SYLLABUS"
-    },
-    "OOPM": {
-      notes: "https://drive.google.com/drive/folders/16ZVPO38l6EVrp_lesQWkfxIOvgXmKb4m?usp=drive_link",
-      pyqs: "https://drive.google.com/drive/folders/1KHBfLUKwdBMg8qyxY0qXUITU8fQljDlb?usp=drive_link",
-      syllabus: "CN_SYLLABUS"
-    }
-  },
-  "4": {
-    "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-    "java": {
-      notes: "JAVA_NOTES",
-      pyqs: "JAVA_PYQS",
-      syllabus: "JAVA_SYLLABUS"
-    }
-  }
-};
 
-const semesterSelect = document.getElementById("semester");
-const subjectSelect = document.getElementById("subject");
-
-semesterSelect.addEventListener("change", loadSubjects);
-
-function getBadges(materials) {
-  const badges = [];
-
-  if (materials.notes && materials.notes.startsWith("http"))
-    badges.push("🟢 Notes");
-
-  if (materials.pyqs && materials.pyqs.startsWith("http"))
-    badges.push("🟡 PYQs");
-
-  if (badges.length === 0)
-    badges.push("🔴 Coming Soon");
-
-  return " — " + badges.join(" | ");
-}
-
-function loadSubjects() {
-  subjectSelect.innerHTML = '<option value="">Select Subject</option>';
-
-  document.getElementsByID("chipContainer").innerHTML="";
-
-  const semester = semesterSelect.value;
-  const showAvailableOnly = document.getElementById("availableOnly").checked;
-
-  if (!semester || !data[semester]) return;
-
-  Object.keys(data[semester]).forEach(subject => {
-    const materials = data[semester][subject];
-
-    let hasAny = false;
-    for (let key in materials) {
-      if (materials[key] && materials[key].startsWith("http")) {
-        hasAny = true;
-        break;
-      }
-    }
-
-    if (showAvailableOnly && !hasAny) return;
-
-    const option = document.createElement("option");
-    option.value = subject;
-    option.textContent = subject + getBadges(materials);
-    subjectSelect.appendChild(option);
-  });
-}
-
-semesterSelect.addEventListener("change", loadSubjects);
-document.getElementById("availableOnly").addEventListener("change", loadSubjects);
-
-
-
-function loadSubjects() {
-  subjectSelect.innerHTML = '<option value="">Select Subject</option>';
-  document.getElementById("chipContainer").innerHTML = "";
-
-  const semester = semesterSelect.value;
-  const showAvailableOnly = document.getElementById("availableOnly").checked;
-
-  if (!semester || !data[semester]) return;
-
-  Object.keys(data[semester]).forEach(subject => {
-    const materials = data[semester][subject];
-
-    let hasAny = false;
-    for (let key in materials) {
-      if (materials[key] && materials[key].startsWith("http")) {
-        hasAny = true;
-        break;
-      }
-    }
-
-    if (showAvailableOnly && !hasAny) return;
-
-    const option = document.createElement("option");
-    option.value = subject;
-    option.textContent = subject;
-    subjectSelect.appendChild(option);
-  });
-}
-
-// -------- Chips --------
-function renderChips(materials) {
-  const chipBox = document.getElementById("chipContainer");
-  chipBox.innerHTML = "";
-
-  let added = false;
-
-  if (materials.notes && materials.notes.startsWith("http")) {
-    const chip = document.createElement("div");
-    chip.className = "status-chip chip-notes";
-    chip.innerHTML = "✅ Notes Available";
-    chipBox.appendChild(chip);
-    added = true;
-  }
-
-  if (materials.pyqs && materials.pyqs.startsWith("http")) {
-    const chip = document.createElement("div");
-    chip.className = "status-chip chip-pyqs";
-    chip.innerHTML = "📄 PYQs Available";
-    chipBox.appendChild(chip);
-    added = true;
-  }
-
-  if (!added) {
-    const chip = document.createElement("div");
-    chip.className = "status-chip chip-coming";
-    chip.innerHTML = "⏳ Coming Soon";
-    chipBox.appendChild(chip);
-  }
-}
-
-// Show chips when subject changes
-subjectSelect.addEventListener("change", () => {
-  const semester = semesterSelect.value;
-  const subject = subjectSelect.value;
-
-  if (!semester || !subject) {
-    document.getElementById("chipContainer").innerHTML = "";
-    return;
-  }
-
-  const materials = data[semester][subject];
-  renderChips(materials);
-});
-
-
-//--------- Open study Pack
-function openStudyPack() {
-  const semester = semesterSelect.value;
-  const subject = subjectSelect.value;
-  const material = document.getElementById("material").value;
-
-  if (!semester || !subject || !material) {
-    alert("Please select Semester, Subject & Material");
-    return;
-  }
-
-  const pack = data[semester]?.[subject]?.[material];
-
-  if (!pack) {
-    alert("This material is not uploaded yet.");
-    return;
-  }
-
-  window.open(pack, "_blank");
-}
-
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const userInfo = document.getElementById("userInfo");
-
-function handleCredentialResponse(response) {
-  const userObject = JSON.parse(atob(response.credential.split(".")[1]));
-
-  localStorage.setItem("studentName", userObject.name);
-  localStorage.setItem("studentEmail", userObject.email);
-
-  ///--------User Pannle----
-
-  showUser();
-}
-
-function showUser() {
-  const name = localStorage.getItem("studentName");
-  const email = localStorage.getItem("studentEmail");
-
-  if (name) {
-    loginBtn.style.display = "none";
-    userInfo.style.display = "block";
-    document.getElementById("userName").textContent = name;
-    document.getElementById("userEmail").textContent = email;
-  }
-}
-
-loginBtn.addEventListener("click", () => {
-  google.accounts.id.initialize
-  google.accounts.id.prompt();
-});
-
-logoutBtn.addEventListener("click", () => {
-  localStorage.clear();
-  location.reload();
-});
-
-showUser();
-
-window.onload = function () {
-  google.accounts.id.initialize({
-    client_id: "596258765969-gg9u20m1phalc6fhke70ur2mogdnqci9.apps.googleusercontent.com",
-    callback: handleCredentialResponse
-  });
-};
-
-
-//-------Admin pannel-------------
-function checkAdmin() {
-  const email = localStorage.getItem("studentEmail");
-
-  // 👇 Replace with YOUR Gmail
-  if (email === "kori626892@gmail.com") {
-    document.getElementById("adminPanel").style.display = "block";
-  }
-}
-
-function saveAdminData() {
-  const sem = document.getElementById("adminSemester").value;
-  const sub = document.getElementById("adminSubject").value.trim();
-  const mat = document.getElementById("adminMaterial").value;
-  const link = document.getElementById("adminLink").value.trim();
-
-  if (!sem || !sub || !link) {
-    alert("Fill all fields!");
-    return;
-  }
-
-  if (!data[sem]) data[sem] = {};
-
-  if (!data[sem][sub]) {
-    data[sem][sub] = { notes:"", pyqs:"", syllabus:"" };
-  }
-
-  data[sem][sub][mat] = link;
-
-  document.getElementById("adminMsg").textContent =
-    `✅ Saved: Sem ${sem} → ${sub} → ${mat}`;
-
-  loadSubjects(); // refresh dropdown
-}
+<script src="script.js">
 </script>
 
 </body>

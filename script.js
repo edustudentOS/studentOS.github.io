@@ -1,141 +1,88 @@
+/****************************************************
+ * ============  STUDENT OS — FINAL CLEAN SCRIPT  =========
+ * - No duplicates
+ * - Works with your HTML
+ * - App-like Home ↔ Profile switching
+ * - Student Dashboard
+ * - Admin panel with LocalStorage save
+ * - Tracks opened materials
+ * - Google login support
+ ****************************************************/
 
-const data = {
+/* ================= DEFAULT DATA ================= */
+
+const defaultData = {
   "1": {
     "Chemistry": {
       notes: "https://drive.google.com/drive/folders/1YkGnUUEm1QwP8A258wwwir4KkKRYVEhQ?usp=drive_link",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
+      pyqs: "",
+      syllabus: ""
     },
-        "M1": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "English for Communication": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "Basic Electrical & Electronics Engineering ": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-    "Engineering Drawing": {
-      notes: "JAVA_NOTES",
-      pyqs: "JAVA_PYQS",
-      syllabus: "JAVA_SYLLABUS"
-    }
+    "M1": { notes: "", pyqs: "", syllabus: "" },
+    "English for Communication": { notes: "", pyqs: "", syllabus: "" },
+    "Basic Electrical & Electronics Engineering": { notes: "", pyqs: "", syllabus: "" },
+    "Engineering Drawing": { notes: "", pyqs: "", syllabus: "" }
   },
-  "2": {
-    "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-    "java": {
-      notes: "JAVA_NOTES",
-      pyqs: "JAVA_PYQS",
-      syllabus: "JAVA_SYLLABUS"
-    }
-  },
+
   "3": {
     "Discrete Mathematics": {
       notes: "https://drive.google.com/drive/folders/1Z8U2IaluGHGV3CkiYlqq5oKK_y1NYFoW?usp=drive_link",
       pyqs: "https://drive.google.com/drive/folders/1WqMEYLj1oeJjo-t0PXgC30gxTb6VYGHa?usp=drive_link",
-      syllabus: "https://drive.google.com/drive/folders/M2_SYLLABUS"
+      syllabus: ""
     },
-    "dsa": {
+    "DSA": {
       notes: "https://drive.google.com/drive/folders/1P2xL4HBrCTkS7M_F5HErfkTHZgqAQQma?usp=drive_link",
       pyqs: "https://drive.google.com/drive/folders/1LDuDsBJ6ONqr9tFUrmHaO8uIwC6-2ZuI?usp=drive_link",
-      syllabus: "DSA_SYLLABUS"
+      syllabus: ""
     },
-    "EEEs": {
+    "EEE": {
       notes: "https://drive.google.com/drive/folders/1ZQ6QoaLmGiZvaIbCaY6LwpcTlxweEqI7?usp=drive_link",
       pyqs: "https://drive.google.com/drive/folders/12FtuXxGJKQJXWsXGVfb2uVSuelyLzzLh?usp=drive_link",
-      syllabus: "DBMS_SYLLABUS"
+      syllabus: ""
     },
     "Digital System": {
       notes: "https://drive.google.com/drive/folders/10lYhVryrHRTU7wcHVhlNzkIR9XKvjim0?usp=drive_link",
       pyqs: "https://drive.google.com/drive/folders/1LaTLi_9iU6tPJKV6oLe9J97c8Mpo8KT2?usp=drive_link",
-      syllabus: "CN_SYLLABUS"
+      syllabus: ""
     },
     "OOPM": {
       notes: "https://drive.google.com/drive/folders/16ZVPO38l6EVrp_lesQWkfxIOvgXmKb4m?usp=drive_link",
       pyqs: "https://drive.google.com/drive/folders/1KHBfLUKwdBMg8qyxY0qXUITU8fQljDlb?usp=drive_link",
-      syllabus: "CN_SYLLABUS"
-    }
-  },
-  "4": {
-    "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-        "cn": {
-      notes: "CN_NOTES",
-      pyqs: "CN_PYQS",
-      syllabus: "CN_SYLLABUS"
-    },
-    "java": {
-      notes: "JAVA_NOTES",
-      pyqs: "JAVA_PYQS",
-      syllabus: "JAVA_SYLLABUS"
+      syllabus: ""
     }
   }
 };
 
-const semesterSelect = document.getElementById("semester");
-const subjectSelect = document.getElementById("subject");
+/* ================= LOCAL STORAGE DB ================= */
 
-semesterSelect.addEventListener("change", loadSubjects);
+const STORAGE_KEY = "studentOS_data";
+let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultData;
 
-
-function getBadges(materials) {
-  const badges = [];
-
-  if (materials.notes && materials.notes.startsWith("http"))
-    badges.push("🟢 Notes");
-
-  if (materials.pyqs && materials.pyqs.startsWith("http"))
-    badges.push("🟡 PYQs");
-
-  if (badges.length === 0)
-    badges.push("🔴 Coming Soon");
-
-  return " — " + badges.join(" | ");
+function saveDB() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-//------------ LOAD SUBJECT BY SEMESTER-----
+/* ================= DOM ELEMENTS ================= */
+
+const semesterSelect = document.getElementById("semester");
+const subjectSelect = document.getElementById("subject");
+const chipBox = document.getElementById("chipContainer");
+const homeScreen = document.getElementById("homeScreen");
+const profileScreen = document.getElementById("profile");
+const homeNav = document.getElementById("homeNav");
+const profileNav = document.getElementById("profileNav");
+
+/* ================= UTIL ================= */
+
+function isLink(url) {
+  return url && url.startsWith("http");
+}
+
+/* ================= LOAD SUBJECTS ================= */
+
 function loadSubjects() {
   subjectSelect.innerHTML = '<option value="">Select Subject</option>';
-
-  document.getElementsByID("chipContainer").innerHTML="";
+  chipBox.innerHTML = "";
 
   const semester = semesterSelect.value;
   const showAvailableOnly = document.getElementById("availableOnly").checked;
@@ -144,216 +91,105 @@ function loadSubjects() {
 
   Object.keys(data[semester]).forEach(subject => {
     const materials = data[semester][subject];
-
-    let hasAny = false;
-    for (let key in materials) {
-      if (materials[key] && materials[key].startsWith("http")) {
-        hasAny = true;
-        break;
-      }
-    }
+    const hasAny = Object.values(materials).some(isLink);
 
     if (showAvailableOnly && !hasAny) return;
 
     const option = document.createElement("option");
     option.value = subject;
-    option.textContent = subject + getBadges(materials);
+    option.textContent = subject;
     subjectSelect.appendChild(option);
   });
 }
 
-semesterSelect.addEventListener("change", loadSubjects);
-document.getElementById("availableOnly").addEventListener("change", loadSubjects);
-
-
-///-------- Chips --------
+/* ================= STATUS CHIPS ================= */
 
 function renderChips(materials) {
-  const chipBox = document.getElementById("chipContainer");
   chipBox.innerHTML = "";
 
   let added = false;
 
-  if (materials.notes && materials.notes.startsWith("http")) {
-    const chip = document.createElement("div");
-    chip.className = "status-chip chip-notes";
-    chip.innerHTML = "✅ Notes Available";
-    chipBox.appendChild(chip);
+  if (isLink(materials.notes)) {
+    chipBox.innerHTML +=
+      `<div class="status-chip chip-notes">✅ Notes Available</div>`;
     added = true;
   }
 
-  if (materials.pyqs && materials.pyqs.startsWith("http")) {
-    const chip = document.createElement("div");
-    chip.className = "status-chip chip-pyqs";
-    chip.innerHTML = "📄 PYQs Available";
-    chipBox.appendChild(chip);
+  if (isLink(materials.pyqs)) {
+    chipBox.innerHTML +=
+      `<div class="status-chip chip-pyqs">📄 PYQs Available</div>`;
     added = true;
   }
 
   if (!added) {
-    const chip = document.createElement("div");
-    chip.className = "status-chip chip-coming";
-    chip.innerHTML = "⏳ Coming Soon";
-    chipBox.appendChild(chip);
+    chipBox.innerHTML =
+      `<div class="status-chip chip-coming">⏳ Coming Soon</div>`;
   }
 }
 
-// Show chips when subject changes
 subjectSelect.addEventListener("change", () => {
-  const semester = semesterSelect.value;
-  const subject = subjectSelect.value;
+  const sem = semesterSelect.value;
+  const sub = subjectSelect.value;
 
-  if (!semester || !subject) {
-    document.getElementById("chipContainer").innerHTML = "";
+  if (!sem || !sub) {
+    chipBox.innerHTML = "";
     return;
   }
 
-  const materials = data[semester][subject];
-  renderChips(materials);
+  renderChips(data[sem][sub]);
 });
 
+/* ================= OPEN STUDY PACK + TRACK ================= */
 
-//--------- Open study Pack
 function openStudyPack() {
-  const semester = semesterSelect.value;
-  const subject = subjectSelect.value;
+  const sem = semesterSelect.value;
+  const sub = subjectSelect.value;
   const material = document.getElementById("material").value;
 
-  if (!semester || !subject || !material) {
+  if (!sem || !sub || !material) {
     alert("Please select Semester, Subject & Material");
     return;
   }
 
-  const pack = data[semester]?.[subject]?.[material];
+  const link = data[sem]?.[sub]?.[material];
 
-  if (!pack) {
+  if (!isLink(link)) {
     alert("This material is not uploaded yet.");
     return;
   }
 
-  localStorage.setItem(
-  "lastDownload",
-  `${subject} - ${material} (Sem ${semester})`
-);
+  window.open(link, "_blank");
 
-updateDashboard();
-
-  //---------FAVORITES BUTTON________
-document.getElementById("favBtn").addEventListener("click", () => {
-  const subject = subjectSelect.value;
-  if (!subject) {
-    alert("Select a subject first!");
-    return;
-  }
-
-  let favs = JSON.parse(localStorage.getItem("favourites") || "[]");
-
-  if (!favs.includes(subject)) {
-    favs.push(subject);
-    localStorage.setItem("favourites", JSON.stringify(favs));
-    updateDashboard();
-  } else {
-    alert("Already in favourites!");
-  }
-});
-
-// -------- DASHBOARD LOGIC --------
-function updateDashboard() {
-  const name = localStorage.getItem("studentName");
-  const email = localStorage.getItem("studentEmail");
-
-  if (!name) return;
-
-  document.getElementById("dashboard").style.display = "block";
-  document.getElementById("dashName").textContent = name;
-
-  const sem = semesterSelect.value || "Not selected";
-  document.getElementById("dashSem").textContent = sem;
-
-  const favs = JSON.parse(localStorage.getItem("favourites") || "[]");
-  const favBox = document.getElementById("favList");
-  favBox.innerHTML = "";
-
-  favs.forEach(sub => {
-    const chip = document.createElement("div");
-    chip.textContent = "⭐ " + sub;
-    chip.style.cssText =
-      "background:#e0f2fe;padding:6px 10px;border-radius:999px;font-size:0.85rem;";
-    favBox.appendChild(chip);
-  });
-
-  const last = localStorage.getItem("lastDownload") || "None";
-  document.getElementById("lastDownload").textContent = last;
+  trackOpen(sem, sub, material);
 }
 
+function trackOpen(sem, sub, material) {
+  let count = Number(localStorage.getItem("openedCount") || 0);
+  count++;
+  localStorage.setItem("openedCount", count);
 
-  // ---- NEW: Save last download ----
-  localStorage.setItem(
-    "lastDownload",
-    `${subject} → ${material.toUpperCase()}`
-  );
+  let recent = JSON.parse(localStorage.getItem("recentActivity") || "[]");
+  recent.unshift(`Opened ${material} of ${sub} (Sem ${sem})`);
 
-  window.open(pack, "_blank");
+  if (recent.length > 5) recent.pop();
 
-  // Update dashboard instantly
-  showUser = function () {
-  const name = localStorage.getItem("studentName");
-
-  if (name) {
-    loginBtn.style.display = "none";
-    userInfo.style.display = "block";
-
-    updateDashboard();   // IMPORTANT
-  }
-};
-  updateDashboard();
+  localStorage.setItem("recentActivity", JSON.stringify(recent));
 }
 
-function updateDashboard() {
-  const name = localStorage.getItem("studentName");
-  if (!name) return;
+/* ================= GOOGLE LOGIN ================= */
 
-  // Show dashboard if visible
-  const dash = document.getElementById("dashboard");
-  if (dash) dash.style.display = "block";
-
-  document.getElementById("dashName").textContent = name;
-
-  // Semester
-  const sem = document.getElementById("semester").value || "Not selected";
-  document.getElementById("dashSem").textContent = sem;
-
-  // Favourites
-  const favs = JSON.parse(localStorage.getItem("favourites") || "[]");
-  const favBox = document.getElementById("favList");
-  if (favBox) {
-    favBox.innerHTML = "";
-    favs.forEach(sub => {
-      const chip = document.createElement("div");
-      chip.textContent = "⭐ " + sub;
-      chip.style.cssText = "background:#e0f2fe;padding:6px 10px;border-radius:999px;font-size:0.85rem;";
-      favBox.appendChild(chip);
-    });
-  }
-
-  // Last download
-  const last = localStorage.getItem("lastDownload") || "None";
-  const lastEl = document.getElementById("lastDownload");
-  if (lastEl) lastEl.textContent = last;
-}
-
-//-----Google Login------
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const userInfo = document.getElementById("userInfo");
 
 function handleCredentialResponse(response) {
-  const userObject = JSON.parse(atob(response.credential.split(".")[1]));
+  const user = JSON.parse(atob(response.credential.split(".")[1]));
 
-  localStorage.setItem("studentName", userObject.name);
-  localStorage.setItem("studentEmail", userObject.email);
+  localStorage.setItem("studentName", user.name);
+  localStorage.setItem("studentEmail", user.email);
 
   showUser();
+  checkAdmin();
 }
 
 function showUser() {
@@ -368,15 +204,7 @@ function showUser() {
   }
 }
 
-window.onload = function () {
-  google.accounts.id.initialize({
-    client_id: "596258765969-gg9u20m1phalc6fhke70ur2mogdnqci9.apps.googleusercontent.com",
-    callback: handleCredentialResponse
-  });
-};
-
 loginBtn.addEventListener("click", () => {
-  google.accounts.id.initialize
   google.accounts.id.prompt();
 });
 
@@ -385,14 +213,11 @@ logoutBtn.addEventListener("click", () => {
   location.reload();
 });
 
-showUser();
+/* ================= ADMIN PANEL ================= */
 
-
-//-------Admin pannel-------------
 function checkAdmin() {
   const email = localStorage.getItem("studentEmail");
 
-  // 👇 Replace with YOUR Gmail
   if (email === "kori626892@gmail.com") {
     document.getElementById("adminPanel").style.display = "block";
   }
@@ -410,45 +235,124 @@ function saveAdminData() {
   }
 
   if (!data[sem]) data[sem] = {};
-
   if (!data[sem][sub]) {
-    data[sem][sub] = { notes:"", pyqs:"", syllabus:"" };
+    data[sem][sub] = { notes: "", pyqs: "", syllabus: "" };
   }
 
   data[sem][sub][mat] = link;
+  saveDB();
 
   document.getElementById("adminMsg").textContent =
     `✅ Saved: Sem ${sem} → ${sub} → ${mat}`;
 
-  loadSubjects(); // refresh dropdown
+  loadSubjects();
 }
 
+/* ================= DASHBOARD ================= */
 
-// Override showUser so dashboard loads after login
-showUser = function () {
-  const name = localStorage.getItem("studentName");
-  const email = localStorage.getItem("studentEmail");
+function showProfilePage() {
+  document.getElementById("pName").textContent =
+    localStorage.getItem("studentName") || "Not Logged In";
 
-  if (name) {
-    loginBtn.style.display = "none";
-    userInfo.style.display = "block";
-    document.getElementById("userName").textContent = name;
-    document.getElementById("userEmail").textContent = email;
+  document.getElementById("pEmail").textContent =
+    localStorage.getItem("studentEmail") || "Not Logged In";
 
-    checkAdmin();
-    updateDashboard();
+  document.getElementById("college").value =
+    localStorage.getItem("college") || "";
+
+  document.getElementById("branch").value =
+    localStorage.getItem("branch") || "";
+
+  document.getElementById("year").value =
+    localStorage.getItem("year") || "";
+
+  document.getElementById("statOpened").textContent =
+    localStorage.getItem("openedCount") || 0;
+
+  const favs = JSON.parse(localStorage.getItem("favorites") || "[]");
+  document.getElementById("statFav").textContent = favs.length;
+
+  renderRecentActivity();
+}
+
+function renderRecentActivity() {
+  const list = document.getElementById("recentList");
+  list.innerHTML = "";
+
+  const recent = JSON.parse(localStorage.getItem("recentActivity") || "[]");
+
+  if (recent.length === 0) {
+    list.innerHTML = "<li>No activity yet.</li>";
+    return;
   }
+
+  recent.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    list.appendChild(li);
+  });
+}
+
+function saveProfile() {
+  const college = document.getElementById("college").value.trim();
+  const branch = document.getElementById("branch").value;
+  const year = document.getElementById("year").value;
+
+  if (!college || !branch || !year) {
+    alert("Please fill all profile details!");
+    return;
+  }
+
+  localStorage.setItem("college", college);
+  localStorage.setItem("branch", branch);
+  localStorage.setItem("year", year);
+
+  document.getElementById("profileMsg").textContent =
+    "✅ Profile saved successfully!";
+}
+
+/* ================= APP-LIKE SCREEN SWITCHING ================= */
+
+function showHome() {
+  homeScreen.classList.remove("hidden");
+  profileScreen.classList.add("hidden");
+
+  document.querySelectorAll(".nav-item")
+    .forEach(i => i.classList.remove("active"));
+
+  homeNav.classList.add("active");
+}
+
+function showProfile() {
+  homeScreen.classList.add("hidden");
+  profileScreen.classList.remove("hidden");
+
+  document.querySelectorAll(".nav-item")
+    .forEach(i => i.classList.remove("active"));
+
+  profileNav.classList.add("active");
+
+  showProfilePage();
+}
+
+homeNav.addEventListener("click", showHome);
+profileNav.addEventListener("click", showProfile);
+
+/* ================= INIT ================= */
+
+window.onload = function () {
+  google.accounts.id.initialize({
+    client_id:
+      "596258765969-gg9u20m1phalc6fhke70ur2mogdnqci9.apps.googleusercontent.com",
+    callback: handleCredentialResponse
+  });
+
+  showUser();
+  checkAdmin();
+  loadSubjects();
+  showHome();      // start on Home screen
 };
 
-function exportData() {
-  const data = {
-    favourites: localStorage.getItem("favourites"),
-    lastDownload: localStorage.getItem("lastDownload"),
-    name: localStorage.getItem("studentName"),
-    email: localStorage.getItem("studentEmail")
-  };
-
-  console.log("ADMIN DATA:", data);
-  alert("Open Console (F12) to see data");
-}
-
+semesterSelect.addEventListener("change", loadSubjects);
+document.getElementById("availableOnly")
+  .addEventListener("change", loadSubjects);
