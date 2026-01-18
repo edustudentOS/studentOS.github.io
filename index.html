@@ -9,8 +9,12 @@
 </head>
 <body>
 
-<header>
-  <h1>Exam Ready Notes – RGPV 2nd Year</h1>
+  <header class="brand-header">
+  <div class="logo-box">
+    <span class="logo-icon">🎓</span>
+    <h1 class="logo-text">StudentOS</h1>
+  </div>
+  <p class="tagline">One place for RGPV Notes, PYQs & Syllabus</p>
 </header>
 
 <div id="authBox" style="text-align:center; margin-bottom:16px;">
@@ -24,8 +28,6 @@
 </div>
 
 <main id="homeScreen">
-
-  <section id="notes"></section>
 
 
   <form class="filters">
@@ -80,6 +82,119 @@
       📤 Upload Your Notes – Get Free Access
     </a>
   </section>
+
+    <section class="hero">
+
+  <h1 class="hero-title">
+    StudentOS — One place for RGPV Notes, PYQs & Syllabus
+  </h1>
+
+  <p class="hero-subtitle">
+    Smart study resources for RGPV students — fast, verified, and mobile-friendly.
+  </p>
+
+  <div class="hero-buttons">
+    <button class="btn-primary">📚 Get 2nd Year Notes</button>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfssMV4Ny7hjr5UOaYlmHSr5MAr2P1Bd2uG9Cacbl1qMp4VsQ/viewform"
+       target="_blank" class="btn-secondary">
+      📤 Upload Notes
+    </a>
+    <a href="#" class="btn-outline">
+      💬 Join Community
+    </a>
+  </div>
+
+</section>
+
+<!-- ===== STUDENT COUNTER ===== -->
+<section class="counter-section">
+  <div class="counter-card">
+    <h2 id="studentCount">0+</h2>
+    <p>Active RGPV Students Using StudentOS</p>
+  </div>
+</section>
+
+<section class="features">
+  <h2>Why StudentOS?</h2>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      ✅ Verified notes
+    </div>
+
+    <div class="feature-card">
+      📄 PYQs sorted year-wise
+    </div>
+
+    <div class="feature-card">
+      ⚡ Fast & mobile-friendly
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="how-it-works">
+  <h2>How StudentOS Works</h2>
+
+  <div class="steps-grid">
+
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <h3>Select Semester</h3>
+      <p>Choose your semester from the dropdown.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <h3>Pick Subject</h3>
+      <p>Select your subject and see available materials.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <h3>Open Notes / PYQs</h3>
+      <p>Open verified Google Drive resources instantly.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">4</div>
+      <h3>Contribute Back</h3>
+      <p>Upload your notes and help other students.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="testimonials">
+  <h2>What Students Say</h2>
+
+  <div class="testimonial-grid">
+
+    <div class="testimonial-card">
+      <p class="quote">
+        “Finally a clean place for RGPV notes — no random PDFs, just useful content.”
+      </p>
+      <p class="author">— Ankit, 3rd Sem CSE</p>
+    </div>
+
+    <div class="testimonial-card">
+      <p class="quote">
+        “The PYQs sorted year-wise saved me a lot of time before exams.”
+      </p>
+      <p class="author">— Neha, 3rd Sem IT</p>
+    </div>
+
+    <div class="testimonial-card">
+      <p class="quote">
+        “Mobile-friendly UI makes studying much easier on my phone.”
+      </p>
+      <p class="author">— Rahul, 2nd Year ECE</p>
+    </div>
+
+  </div>
+</section>
+
 </main>
 
 <section id="adminPanel" style="display:none; margin-top:30px; padding:16px; border:1px solid #ddd; border-radius:10px; background:#f9fafb;">
@@ -110,6 +225,18 @@
   <button onclick="saveAdminData()" style="margin-top:10px;">💾 Save Link</button>
 
   <p id="adminMsg" style="margin-top:10px; color:green;"></p>
+
+  <hr style="margin:12px 0;">
+
+<h3 style="text-align:center;">📊 Admin Analytics</h3>
+
+<p><strong>Total Site Visits:</strong> <span id="adminVisits">0</span></p>
+<p><strong>Total Materials Opened:</strong> <span id="adminOpened">0</span></p>
+
+<button onclick="loadAdminAnalytics()" style="margin-top:10px;">
+  Refresh Analytics
+</button>
+
 </section>
 
 <section id="profile" class="screen hidden">
@@ -128,6 +255,38 @@
         <p><strong>Email:</strong> <span id="pEmail">-</span></p>
       </div>
 
+      <!------Charts----->
+
+       <hr style="margin:12px 0;">
+
+     <h3 style="font-size:1rem;">📈 Usage Charts</h3>
+
+     <div class="chart-card">
+       <h4>Materials Opened (by Semester)</h4>
+       <div class="bar-chart" id="semChart"></div>
+     </div>
+
+     <div class="chart-card" style="margin-top:12px;">
+       <h4>Your Activity (Last 7 Days)</h4>
+      <div class="bar-chart" id="weekChart"></div>
+     </div>
+
+     <!----- Dashboard----->
+
+     <hr style="margin:12px 0;">
+
+   <h3 style="font-size:1rem;">🏆 Leaderboard</h3>
+
+   <div class="chart-card">
+     <h4>Top Contributors</h4>
+     <ul id="contribList"></ul>
+   </div>
+
+   <div class="chart-card" style="margin-top:12px;">
+     <h4>Top Active Students</h4>
+      <ul id="userList"></ul>
+   </div>
+
       <!-- STATS GRID -->
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
 
@@ -144,6 +303,24 @@
       </div>
 
       <hr style="margin:12px 0;">
+
+      
+
+  <h3 style="font-size:1rem;">📊 Platform Analytics</h3>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+
+    <div style="background:#f3f4ff; padding:10px; border-radius:10px;">
+     <p style="font-size:0.8rem;">👥 Total Visits</p>
+     <h3 id="statVisits">0</h3>
+    </div>
+
+  <div style="background:#fff0f6; padding:10px; border-radius:10px;">
+    <p style="font-size:0.8rem;">📂 Materials Opened</p>
+    <h3 id="statOpenedGlobal">0</h3>
+  </div>
+
+</div>
 
       <label>College Name:</label>
       <input id="college" placeholder="Enter your college" style="padding:8px; border-radius:6px; width:100%;">
@@ -184,6 +361,12 @@
   </div>
 </section>
 
+<!-- ===== STICKY CTA ===== -->
+<div class="sticky-cta">
+  <span>📚 Need Exam-Ready Notes?</span>
+  <button onclick="scrollToNotes()">Get 2nd Year Notes</button>
+</div>
+
 <nav class="bottom-nav">
 <a href="javascript:void(0)" id="homeNav" class="nav-item active">
   🏠 <span>Home</span>
@@ -200,7 +383,6 @@
   👤 <span>Profile</span>
 </a>
 </nav>
-
 
 <script src="script.js">
 </script>

@@ -161,6 +161,8 @@ function openStudyPack() {
   window.open(link, "_blank");
 
   trackOpen(sem, sub, material);
+  trackGlobalOpen();
+
 }
 
 function trackOpen(sem, sub, material) {
@@ -356,3 +358,195 @@ window.onload = function () {
 semesterSelect.addEventListener("change", loadSubjects);
 document.getElementById("availableOnly")
   .addEventListener("change", loadSubjects);
+
+  // ===== LIVE STUDENT COUNTER =====
+function animateCounter() {
+  let count = 30; // start from 30
+  const target = 120; // pretend live users
+  const el = document.getElementById("studentCount");
+
+  const interval = setInterval(() => {
+    if (count >= target) {
+      el.textContent = target + "+";
+      clearInterval(interval);
+    } else {
+      count += 2;
+      el.textContent = count + "+";
+    }
+  }, 50);
+}
+
+// ===== SCROLL TO NOTES BUTTON =====
+function scrollToNotes() {
+  document.getElementById("notes").scrollIntoView({ behavior: "smooth" });
+}
+
+// Run counter on page load
+window.addEventListener("load", animateCounter);
+
+// ===== GLOBAL ANALYTICS =====
+
+// Track site visits
+function trackVisit() {
+  let visits = Number(localStorage.getItem("totalVisits") || 0);
+  visits++;
+  localStorage.setItem("totalVisits", visits);
+}
+
+// Track total materials opened
+function trackGlobalOpen() {
+  let total = Number(localStorage.getItem("totalOpened") || 0);
+  total++;
+  localStorage.setItem("totalOpened", total);
+}
+
+// Load analytics in dashboard
+function loadAnalytics() {
+  document.getElementById("statVisits").textContent =
+    localStorage.getItem("totalVisits") || 0;
+
+  document.getElementById("statOpenedGlobal").textContent =
+    localStorage.getItem("totalOpened") || 0;
+}
+
+// Call on every visit
+window.addEventListener("load", () => {
+  trackVisit();
+});
+
+function loadAdminAnalytics() {
+  document.getElementById("adminVisits").textContent =
+    localStorage.getItem("totalVisits") || 0;
+
+  document.getElementById("adminOpened").textContent =
+    localStorage.getItem("totalOpened") || 0;
+}
+
+// ===== USAGE CHARTS =====
+
+// Track opens per semester
+function trackSemOpen(sem) {
+  let stats = JSON.parse(localStorage.getItem("semStats") || "{}");
+  stats[sem] = (stats[sem] || 0) + 1;
+  localStorage.setItem("semStats", JSON.stringify(stats));
+}
+
+// Track daily activity
+function trackDaily() {
+  const today = new Date().toISOString().slice(0, 10);
+  let days = JSON.parse(localStorage.getItem("dailyActivity") || "{}");
+  days[today] = (days[today] || 0) + 1;
+  localStorage.setItem("dailyActivity", JSON.stringify(days));
+}
+
+// Modify your existing openStudyPack()
+// Add inside openStudyPack() AFTER trackOpen():
+trackSemOpen(sem);
+trackDaily();
+
+// ---- Render charts ----
+function renderCharts() {
+  renderSemChart();
+  renderWeekChart();
+}
+
+function renderSemChart() {
+  const stats = JSON.parse(localStorage.getItem("semStats") || "{}");
+  const box = document.getElementById("semChart");
+  box.innerHTML = "";
+
+  for (let sem in stats) {
+    const row = document.createElement("div");
+    row.className = "bar-row";
+
+    row.innerHTML = `
+      <div class="bar-label">Sem ${sem}</div>
+      <div class="bar" style="width:${Math.min(stats[sem]*10, 100)}%"></div>
+      <span style="margin-left:6px; font-size:0.8rem;">${stats[sem]}</span>
+    `;
+    box.appendChild(row);
+  }
+}
+
+function renderWeekChart() {
+  const days = JSON.parse(localStorage.getItem("dailyActivity") || "{}");
+  const box = document.getElementById("weekChart");
+  box.innerHTML = "";
+
+  const today = new Date();
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    const count = days[key] || 0;
+
+    const row = document.createElement("div");
+    row.className = "bar-row";
+
+    const label = d.toLocaleDateString("en-GB", { weekday: "short" });
+
+    row.innerHTML = `
+      <div class="bar-label">${label}</div>
+      <div class="bar" style="width:${Math.min(count*20, 100)}%"></div>
+      <span style="margin-left:6px; font-size:0.8rem;">${count}</span>
+    `;
+    box.appendChild(row);
+  }
+}
+
+// Call charts when dashboard opens
+const oldShowProfile = showProfilePage;
+showProfilePage = function() {
+  oldShowProfile();
+  renderCharts();
+};
+
+// ===== LEADERBOARD (MOCK + REAL) =====
+
+// Save contributor when admin adds link
+function trackContributor(email) {
+  let board = JSON.parse(localStorage.getItem("contributors") || "{}");
+  board[email] = (board[email] || 0) + 1;
+  localStorage.setItem("contributors", JSON.stringify(board));
+}
+
+// Add inside saveAdminData(), AFTER saveDB():
+trackContributor(localStorage.getItem("studentEmail"));
+
+// ---- Render leaderboard ----
+function renderLeaderboard() {
+  const contrib = JSON.parse(localStorage.getItem("contributors") || "{}");
+  const users = JSON.parse(localStorage.getItem("userOpens") || "{}");
+
+  // Top contributors
+  const cList = document.getElementById("contribList");
+  cList.innerHTML = "";
+
+  Object.entries(contrib)
+    .sort((a,b) => b[1]-a[1])
+    .slice(0,5)
+    .forEach(([email, count]) => {
+      const li = document.createElement("li");
+      li.textContent = `${email} — ${count} uploads`;
+      cList.appendChild(li);
+    });
+
+  // Top users by opens
+  const uList = document.getElementById("userList");
+  uList.innerHTML = "";
+
+  const myEmail = localStorage.getItem("studentEmail");
+  let opens = Number(localStorage.getItem("openedCount") || 0);
+
+  const li = document.createElement("li");
+  li.textContent = `${myEmail} — ${opens} materials opened`;
+  uList.appendChild(li);
+}
+
+// Hook into dashboard open
+const oldDash = showProfilePage;
+showProfilePage = function() {
+  oldDash();
+  renderCharts();
+  renderLeaderboard();
+};
